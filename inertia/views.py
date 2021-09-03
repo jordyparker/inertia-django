@@ -46,7 +46,7 @@ def _build_context(component_name, props, version, url):
     return context
 
 
-def render_inertia(request, component_name, props=None, template_name=None):
+def render_inertia(request, component_name, props=None, template_name=None, *args, **kwargs):
     """
     Renders either an HttpRespone or JsonResponse of a component for
     the use in an InertiaJS frontend integration.
@@ -118,6 +118,14 @@ def render_inertia(request, component_name, props=None, template_name=None):
     context = _build_context(component_name, _props,
                              inertia_version,
                              url=request.get_full_path())
+    if len(kwargs.keys()) > 0:
+        for item in kwargs.items():
+            key = item[0]
+            value = item[1]
+            context[key] = value
+
+        kwargs.clear()
+
     return render(request, inertia_template, context)
 
 
